@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+			}
+			
+			body {
+				background: #EEEEEE;
+			}
+			
+			#canvas {
+				background-color: #E6E6E6;
+				margin-left: 300px;
+				margin-top: 50px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="canvas" width="630" height="630"></canvas>
+	</body>
+	<script type="text/javascript">
+		var canvas = document.querySelector('#canvas')
+		var context = canvas.getContext('2d')
+		var flag = true
+
+		var r = 30
+		var edges = canvas.width
+		var offset_w = 315
+		var offset_h = 65
+		var arr = []
+
+		init_canvas()
+
+		function init_canvas() {
+			flag = true
+			arr = []
+			for(var i = 0; i < 21; i++) {
+				arr.push(new Array(21))
+			}
+			context.clearRect(0, 0, canvas.width, canvas.height)
+			context.strokeStyle = '#444444'
+
+			for(var i = 15; i <= edges; i += r) {
+				context.moveTo(15, i)
+				context.lineTo(edges - 15, i)
+				context.moveTo(i, 15)
+				context.lineTo(i, edges - 15)
+			}
+			context.stroke()
+		}
+
+		function add_pieces(position) {
+			if(arr[position.x][position.y] == undefined) {
+				arr[position.x][position.y] = flag
+			} else {
+				return
+			}
+			context.beginPath()
+			if(flag) {
+				context.fillStyle = 'white'
+			} else {
+				context.fillStyle = 'black'
+			}
+			context.arc(position.x * 30 + 15, position.y * 30 + 15, r / 2 - 2, 0, Math.PI * 2)
+			context.closePath()
+			context.fill()
+			flag = !flag
+			setTimeout('check_result()', 5)
+		}
+
+		function check_result() {
+			for(var i = 0; i < arr.length; i++) {
+				var white = 0
+				var black = 0
+				for(var j = 0; j < arr[i].length; j++) {
+					if(arr[i][j] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[i][j]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+
+			for(var i = 0; i < arr.length; i++) {
+				var white = 0
+				var black = 0
+				for(var j = 0; j < arr[i].length; j++) {
+					if(arr[j][i] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[j][i]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+
+			for(var i = 5; i < 21; i++) {
+				var white = 0
+				var black = 0
+				for(var j = 0; i != j; j++) {
+					if(arr[j][i - j] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[j][i - j]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+
+			for(var i = 1; i < 17; i++) {
+				var white = 0
+				var black = 0
+				for(var j = 20, k = 0; j >= i; j--, k++) {
+					if(arr[i + k][j] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[i + k][j]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+
+			for(var i = 16; i >= 0; i--) {
+				var white = 0
+				var black = 0
+				for(var j = 0; j < 21 - i; j++) {
+					if(arr[j][i + j] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[j][i + j]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+
+			for(var i = 1; i < 21; i++) {
+				var white = 0
+				var black = 0
+				for(var j = 0; j < 21 - i; j++) {
+					if(arr[i + j][j] == undefined) {
+						white = 0
+						black = 0
+					} else if(arr[i + j][j]) {
+						white++
+						black = 0
+					} else {
+						black++
+						white = 0
+					}
+					if(white == 5) {
+						alert('白棋胜了')
+						init_canvas()
+						return
+					} else if(black == 5) {
+						alert('黑棋胜了')
+						init_canvas()
+						return
+					}
+				}
+			}
+		}
+
+		canvas.addEventListener('click', function(e) {
+			var x, y
+			if((e.clientX - offset_w) % 30 > 15) {
+				x = ~~((e.clientX - offset_w) / 30) + 1
+			} else {
+				x = ~~((e.clientX - offset_w) / 30)
+			}
+
+			if((e.clientY - offset_h) % 30 > 15) {
+				y = ~~((e.clientY - offset_h) / 30) + 1
+			} else {
+				y = ~~((e.clientY - offset_h) / 30)
+			}
+			var position = {
+				x: x,
+				y: y
+			}
+			add_pieces(position)
+		})
+	</script>
+
+</html>
